@@ -35,7 +35,7 @@ def top_ten(subreddit):
                                 allow_redirects=False)
 
         # Check if we got a redirect (invalid subreddit)
-        if response.status_code == 302:
+        if response.status_code == 302 or response.status_code == 404:
             print("None")
             return
 
@@ -47,20 +47,31 @@ def top_ten(subreddit):
         # Parse JSON response
         data = response.json()
 
+        # Check for Reddit API errors
+        if 'error' in data:
+            print("None")
+            return
+
         # Check if we have valid data structure
-        if ('data' not in data or 'children' not in data['data'] or
-                not data['data']['children']):
+        if 'data' not in data or 'children' not in data['data']:
             print("None")
             return
 
         posts = data['data']['children']
 
+        # If no posts found, it might be an invalid subreddit
+        if not posts:
+            print("None")
+            return
+
         # Print titles of first 10 posts
-        for i, post in enumerate(posts):
-            if i >= 10:
+        count = 0
+        for post in posts:
+            if count >= 10:
                 break
             if 'data' in post and 'title' in post['data']:
                 print(post['data']['title'])
+                count += 1
 
     except (requests.RequestException, ValueError, KeyError):
         print("None")
