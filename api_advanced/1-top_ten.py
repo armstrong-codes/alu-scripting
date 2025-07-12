@@ -17,9 +17,9 @@ def top_ten(subreddit):
     Returns:
         None
     """
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {
-        "User-Agent": "python:subreddit.hot:v1.0.0 (by /u/yourusername)"
+        "User-Agent": "python:top.ten:v1.0.0 (by /u/alx_student)"
     }
     params = {
         "limit": 10
@@ -29,15 +29,16 @@ def top_ten(subreddit):
         response = requests.get(
             url, headers=headers, params=params, allow_redirects=False)
 
-        # If subreddit doesn't exist
+        # Subreddit does not exist or forbidden
         if response.status_code != 200:
             print("None")
             return
 
-        data = response.json()
-        posts = data.get("data", {}).get("children", [])
+        results = response.json().get("data", {}).get("children", [])
+        if not results:
+            return  # Valid subreddit but no posts, do nothing
 
-        for post in posts:
+        for post in results:
             title = post.get("data", {}).get("title")
             if title:
                 print(title)
