@@ -214,8 +214,8 @@ def _insert_sorted(sorted_items, item, index):
     word, count = item
     existing_word, existing_count = sorted_items[index]
     
-    if (count > existing_count or 
-        (count == existing_count and word < existing_word)):
+    if (count > existing_count or
+            (count == existing_count and word < existing_word)):
         sorted_items.insert(index, item)
         return
     
