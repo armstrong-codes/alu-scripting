@@ -15,28 +15,27 @@ def top_ten(subreddit):
         subreddit (str): The name of the subreddit
 
     Returns:
-        None: Prints titles directly, or "None" if subreddit is invalid
+        None
     """
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {
-        'User-Agent': 'custom-user-agent'
+        "User-Agent": "python:subreddit.hot:v1.0.0 (by /u/yourusername)"
     }
     params = {
-        'limit': 10
+        "limit": 10
     }
 
     try:
-        response = requests.get(url, headers=headers, params=params,
-                                allow_redirects=False)
+        response = requests.get(
+            url, headers=headers, params=params, allow_redirects=False)
+
+        # If subreddit doesn't exist
         if response.status_code != 200:
             print("None")
             return
 
         data = response.json()
         posts = data.get("data", {}).get("children", [])
-
-        if not posts:
-            return  # Do not print None; subreddit is valid but has no hot posts
 
         for post in posts:
             title = post.get("data", {}).get("title")
